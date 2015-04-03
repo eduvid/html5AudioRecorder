@@ -35,7 +35,9 @@ var AudioRecorder = klass({
   initialize: function () {
     this.audioContext = new AudioContext();
     var self = this;
-    this.config = {};
+    this.config = {
+      bufferLen: 4096
+    };
     this.jobs = new JobCollection();
     this.recording = false;
 
@@ -59,22 +61,16 @@ var AudioRecorder = klass({
   },
   gotStream: function (stream) {
     var self = this;
-    var bufferLen = 4096;
-
-    var inputPoint = this.audioContext.createGain();
     var audioInput = this.audioContext.createMediaStreamSource(stream);
-    this.context = inputPoint.context;
-    audioInput.connect(inputPoint);
-
     var node;
-    if(!this.context.createScriptProcessor){
-      node = this.context.createJavaScriptNode(bufferLen, 2, 2);
+    if(!this.audioContext.createScriptProcessor){
+      node = this.audioContext.createJavaScriptNode(this.config.bufferLen, 2, 2);
     } else {
-      node = this.context.createScriptProcessor(bufferLen, 2, 2);
+      node = this.audioContext.createScriptProcessor(this.config.bufferLen, 2, 2);
     }
 
-    inputPoint.connect(node);
-    node.connect(this.context.destination);
+    audioInput.connect(node);
+    node.connect(this.audioContext.destination);
     node.onaudioprocess = function(e){
       self.onAudioProcess(e);
     };
@@ -83,12 +79,15 @@ var AudioRecorder = klass({
     this.worker.postMessage({
       command: 'init',
       config: {
-        sampleRate: this.context.sampleRate
+        sampleRate: this.audioContext.sampleRate
       }
     });
     this.worker.onmessage = function(e){
       self.jobs.executeJob(e.data.jobId, e.data.blobOrBuffer);
     };
+  },
+  pause: function () {
+    this.node.disconnect();
   },
   onAudioProcess: function (e) {
     if (!this.recording){
