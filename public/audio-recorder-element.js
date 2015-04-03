@@ -38,6 +38,11 @@ choona.registerElement(choona.ElementView.extend({
       ele.src = url;
     }, "URL");
   },
+  getBlob: function (cb) {
+    this.audioRecorder.export(function (blob) {
+      cb(blob);
+    }, "blob");
+  },
   createDownloadLink: function () {
     var self = this;
     this.audioRecorder.export(function (url) {
