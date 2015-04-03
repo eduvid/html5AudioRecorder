@@ -1,0 +1,21 @@
+{
+  "name": "html5AudioRecorder",
+  "version": "0.0.1",
+  "homepage": "https://github.com/eduvid/html5Audiorecorder",
+  "authors": [
+    "Narendra Sisodiya <narendra@narendrasisodiya.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "choona.js": "master",
+    "js-klass": "~1.0.0",
+    "webcomponents.js": "~0.6.0"
+  }
+}
