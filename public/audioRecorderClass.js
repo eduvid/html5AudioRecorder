@@ -44,6 +44,7 @@ var AudioRecorder = klass({
       navigator.requestAnimationFrame = navigator.webkitRequestAnimationFrame || navigator.mozRequestAnimationFrame;
     }
     var self = this;
+    this.jobs = new JobCollection();
 
     navigator.getUserMedia(
       {
@@ -64,8 +65,9 @@ var AudioRecorder = klass({
       });
   },
   gotStream: function (stream) {
+    var self = this;
+
     inputPoint = this.audioContext.createGain();
-    // Create an AudioNode from the stream.
     realAudioInput = this.audioContext.createMediaStreamSource(stream);
     audioInput = realAudioInput;
     audioInput.connect(inputPoint);
@@ -89,10 +91,8 @@ var AudioRecorder = klass({
         sampleRate: this.context.sampleRate
       }
     });
-    var self = this;
     this.worker.onmessage = function(e){
-      var blob = e.data;
-      self.currCallback(blob);
+      self.jobs.executeJob(e.data.jobId, e.data.blobOrBuffer);
     };
     this.recording = false;
 
@@ -134,8 +134,10 @@ var AudioRecorder = klass({
   },
 
   getBuffers : function(cb) {
-    this.currCallback = cb || this.config.callback;
-    this.worker.postMessage({ command: 'getBuffers' })
+    this.worker.postMessage({
+      command: 'getBuffers',
+      jobId: this.jobs.addJob(cb)
+    })
   },
   export: function (callback, type) {
     this.exportWAV(function (blob) {
@@ -148,22 +150,18 @@ var AudioRecorder = klass({
     });
   },
 
-  exportWAV : function(cb, type){
-    this.currCallback = cb || this.config.callback;
-    type = type || this.config.type || 'audio/wav';
-    if (!this.currCallback) throw new Error('Callback not set');
+  exportWAV : function(cb){
     this.worker.postMessage({
       command: 'exportWAV',
-      type: type
+      type: 'audio/wav',
+      jobId: this.jobs.addJob(cb)
     });
   },
-  exportMonoWAV : function(cb, type){
-    this.currCallback = cb || this.config.callback;
-    type = type || this.config.type || 'audio/wav';
-    if (!this.currCallback) throw new Error('Callback not set');
+  exportMonoWAV : function(cb){
     this.worker.postMessage({
       command: 'exportMonoWAV',
-      type: type
+      type: 'audio/wav',
+      jobId: this.jobs.addJob(cb)
     });
   },
   configure : function(cfg){

@@ -31,13 +31,13 @@ this.onmessage = function(e){
       record(e.data.buffer);
       break;
     case 'exportWAV':
-      exportWAV(e.data.type);
+      exportWAV(e.data.type, e.data.jobId);
       break;
     case 'exportMonoWAV':
-      exportMonoWAV(e.data.type);
+      exportMonoWAV(e.data.type, e.data.jobId);
       break;
     case 'getBuffers':
-      getBuffers();
+      getBuffers(e.data.jobId);
       break;
     case 'clear':
       clear();
@@ -55,29 +55,38 @@ function record(inputBuffer){
   recLength += inputBuffer[0].length;
 }
 
-function exportWAV(type){
+function exportWAV(type, jobId){
   var bufferL = mergeBuffers(recBuffersL, recLength);
   var bufferR = mergeBuffers(recBuffersR, recLength);
   var interleaved = interleave(bufferL, bufferR);
   var dataview = encodeWAV(interleaved);
   var audioBlob = new Blob([dataview], { type: type });
 
-  this.postMessage(audioBlob);
+  this.postMessage({
+    jobId:jobId,
+    blobOrBuffer: audioBlob
+  });
 }
 
-function exportMonoWAV(type){
+function exportMonoWAV(type, jobId){
   var bufferL = mergeBuffers(recBuffersL, recLength);
   var dataview = encodeWAV(bufferL, true);
   var audioBlob = new Blob([dataview], { type: type });
 
-  this.postMessage(audioBlob);
+  this.postMessage({
+    jobId:jobId,
+    blobOrBuffer: audioBlob
+  });
 }
 
-function getBuffers() {
+function getBuffers(jobId) {
   var buffers = [];
   buffers.push( mergeBuffers(recBuffersL, recLength) );
   buffers.push( mergeBuffers(recBuffersR, recLength) );
-  this.postMessage(buffers);
+  this.postMessage({
+    jobId:jobId,
+    blobOrBuffer: buffers
+  });
 }
 
 function clear(){
