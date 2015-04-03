@@ -20,31 +20,24 @@
 
 //This will be audio recorder file
 var WORKER_PATH = 'recorderWorker.js';
+window.AudioContext = window.AudioContext || window.webkitAudioContext;
 
+if (!navigator.getUserMedia){
+  navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+}
+if (!navigator.cancelAnimationFrame){
+  navigator.cancelAnimationFrame = navigator.webkitCancelAnimationFrame || navigator.mozCancelAnimationFrame;
+}
+if (!navigator.requestAnimationFrame){
+  navigator.requestAnimationFrame = navigator.webkitRequestAnimationFrame || navigator.mozRequestAnimationFrame;
+}
 var AudioRecorder = klass({
   initialize: function () {
-    this.init();
-  },
-  init: function () {
-    window.AudioContext = window.AudioContext || window.webkitAudioContext;
     this.audioContext = new AudioContext();
-    var audioInput = null,
-        realAudioInput = null,
-        inputPoint = null;
-    var rafID = null;
-    var analyserContext = null;
-    var recIndex = 0;
-    if (!navigator.getUserMedia){
-      navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-    }
-    if (!navigator.cancelAnimationFrame){
-      navigator.cancelAnimationFrame = navigator.webkitCancelAnimationFrame || navigator.mozCancelAnimationFrame;
-    }
-    if (!navigator.requestAnimationFrame){
-      navigator.requestAnimationFrame = navigator.webkitRequestAnimationFrame || navigator.mozRequestAnimationFrame;
-    }
     var self = this;
+    this.config = {};
     this.jobs = new JobCollection();
+    this.recording = false;
 
     navigator.getUserMedia(
       {
@@ -66,23 +59,25 @@ var AudioRecorder = klass({
   },
   gotStream: function (stream) {
     var self = this;
+    var bufferLen = 4096;
 
-    inputPoint = this.audioContext.createGain();
-    realAudioInput = this.audioContext.createMediaStreamSource(stream);
-    audioInput = realAudioInput;
-    audioInput.connect(inputPoint);
-    analyserNode = this.audioContext.createAnalyser();
-    analyserNode.fftSize = 2048;
-    inputPoint.connect( analyserNode );
-
-    this.config = {};
-    var bufferLen = this.config.bufferLen || 4096;
+    var inputPoint = this.audioContext.createGain();
+    var audioInput = this.audioContext.createMediaStreamSource(stream);
     this.context = inputPoint.context;
+    audioInput.connect(inputPoint);
+
+    var node;
     if(!this.context.createScriptProcessor){
-      this.node = this.context.createJavaScriptNode(bufferLen, 2, 2);
+      node = this.context.createJavaScriptNode(bufferLen, 2, 2);
     } else {
-      this.node = this.context.createScriptProcessor(bufferLen, 2, 2);
+      node = this.context.createScriptProcessor(bufferLen, 2, 2);
     }
+
+    inputPoint.connect(node);
+    node.connect(this.context.destination);
+    node.onaudioprocess = function(e){
+      self.onAudioProcess(e);
+    };
 
     this.worker = new Worker(this.config.workerPath || WORKER_PATH);
     this.worker.postMessage({
@@ -94,25 +89,19 @@ var AudioRecorder = klass({
     this.worker.onmessage = function(e){
       self.jobs.executeJob(e.data.jobId, e.data.blobOrBuffer);
     };
-    this.recording = false;
-
-    this.node.onaudioprocess = function(e){
-      if (!self.recording) return;
-      console.log("Recoding, onaudioprocess");
-      self.worker.postMessage({
-        command: 'record',
-        buffer: [
-          e.inputBuffer.getChannelData(0),
-          e.inputBuffer.getChannelData(1)
-        ]
-      });
-    };
-    inputPoint.connect(this.node);
-    this.node.connect(this.context.destination);
-    zeroGain = this.audioContext.createGain();
-    zeroGain.gain.value = 0.0;
-    inputPoint.connect( zeroGain );
-    zeroGain.connect( this.audioContext.destination );
+  },
+  onAudioProcess: function (e) {
+    if (!this.recording){
+      return;
+    }
+    console.log("Recoding, onaudioprocess");
+    this.worker.postMessage({
+      command: 'record',
+      buffer: [
+        e.inputBuffer.getChannelData(0),
+        e.inputBuffer.getChannelData(1)
+      ]
+    });
   },
   startRecording: function () {
     this.clear();
@@ -172,5 +161,3 @@ var AudioRecorder = klass({
     }
   }
 });
-
-
