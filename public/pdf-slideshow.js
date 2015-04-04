@@ -51,16 +51,22 @@ choona.registerElement(choona.ElementView.extend({
     '<button id="prev">Previous</button>' +
     '<button id="next">Next</button>&nbsp; &nbsp;' +
     '<span>Page: <span id="page_num"></span> / <span id="page_count"></span></span>' +
-    '</div><div><canvas id="the-canvas" style="border:1px solid black"></canvas></div>';
+    '</div><div><canvas id="the-canvas" style="border:1px solid black"></canvas></div>' +
+    '<boot-progressbar></boot-progressbar>';
 
   },
   loadPdf: function () {
     var self = this;
     PDFJS.getDocument(this.$.src).then(function (pdfDoc) {
-      self.pdfDoc = pdfDoc;
-      self.$.querySelector('#page_count').textContent = self.pdfDoc.numPages;
-      self.$.currentPage = 1;
+      self.onPdfLoaded(pdfDoc);
     });
+  },
+  onPdfLoaded: function (pdfDoc) {
+    this.pdfDoc = pdfDoc;
+    this.$.querySelector('#page_count').textContent = this.pdfDoc.numPages;
+
+    this.$.querySelector("boot-progressbar").max = this.pdfDoc.numPages;
+    this.$.currentPage = 1;
   },
   renderPage: function (num) {
     console.log("Rendering Page ", num);
@@ -95,6 +101,7 @@ choona.registerElement(choona.ElementView.extend({
     this.queueRenderPage(this.$.currentPage);
     //We are trigger currentPageChange event so that outside work can get to now about current state of pdf slidesohw.
     this.trigger("currentPageChange");
+    this.$.querySelector("boot-progressbar").value = this.$.currentPage;
   },
   onNextPage: function () {
     if (this.$.currentPage >= this.pdfDoc.numPages) {
