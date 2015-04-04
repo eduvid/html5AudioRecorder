@@ -2,12 +2,19 @@
  * Created by narendra on 3/4/15.
  */
 
+//TODO - Arrow key navigation !!
+
 choona.registerElement(choona.ElementView.extend({
   tagName: "pdf-slideshow",
   template:'',
   accessors:{
     src:{
       type: "string"
+    },
+    currentPage: {
+      type: "int",
+      default: 1,
+      onChange: "onPageChange"
     }
   },
   events:{
@@ -25,7 +32,7 @@ choona.registerElement(choona.ElementView.extend({
     this.render();
 
     this.pdfDoc = null;
-    this.pageNum = 1;
+
     this.pageRendering = false;
     this.pageNumPending = null;
     this.scale = 1;
@@ -37,10 +44,8 @@ choona.registerElement(choona.ElementView.extend({
     console.log("I am ending " + this.tagName);
   },
   attributeChangedCallback: function (attrName, oldVal, newVal) {
-    console.log(arguments);
   },
   createPlayback: function () {
-
   },
   render: function () {
     this.$.innerHTML = '<h1>Pdf Slideshow</h1><div>' +
@@ -55,11 +60,11 @@ choona.registerElement(choona.ElementView.extend({
     PDFJS.getDocument(this.$.src).then(function (pdfDoc) {
       self.pdfDoc = pdfDoc;
       self.$.querySelector('#page_count').textContent = self.pdfDoc.numPages;
-      // Initial/first page rendering
-      self.renderPage(self.pageNum);
+      self.$.currentPage = 1;
     });
   },
   renderPage: function (num) {
+    console.log("Rendering Page ", num);
     this.pageRendering = true;
     // Using promise to fetch the page
     var self = this;
@@ -84,23 +89,25 @@ choona.registerElement(choona.ElementView.extend({
         }
       });
     });
-
     // Update page counters
     this.$.querySelector('#page_num').textContent = num;
   },
+  onPageChange: function () {
+    this.queueRenderPage(this.$.currentPage);
+    //We are trigger currentPageChange event so that outside work can get to now about current state of pdf slidesohw.
+    this.trigger("currentPageChange");
+  },
   onNextPage: function () {
-    if (this.pageNum >= this.pdfDoc.numPages) {
+    if (this.$.currentPage >= this.pdfDoc.numPages) {
       return;
     }
-    this.pageNum++;
-    this.queueRenderPage(this.pageNum);
+    this.$.currentPage++;
   },
   onPrevPage: function () {
-    if (this.pageNum <= 1) {
+    if (this.$.currentPage <= 1) {
       return;
     }
-    this.pageNum--;
-    this.queueRenderPage(this.pageNum);
+    this.$.currentPage--;
   },
   queueRenderPage: function (num) {
     if (this.pageRendering) {
