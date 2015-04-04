@@ -22,8 +22,7 @@ choona.registerElement(choona.ElementView.extend({
     "click #prev":"onPrevPage"
   },
   initialize: function () {
-    choona.ElementView.apply(this, arguments);
-
+    this.constructor.parent.apply(this, arguments);
   },
   createdCallback: function () {
 
