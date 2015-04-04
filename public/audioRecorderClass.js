@@ -40,7 +40,9 @@ var AudioRecorder = klass({
     };
     this.jobs = new JobCollection();
     this.recording = false;
-
+  },
+  askPermissionAndSetup: function (cb) {
+    var self = this;
     navigator.getUserMedia(
       {
         "audio": {
@@ -54,6 +56,7 @@ var AudioRecorder = klass({
         }
       }, function (stream) {
         self.gotStream(stream);
+        cb();
       }, function(e) {
         alert('Error getting audio');
         console.log(e);
@@ -125,13 +128,13 @@ var AudioRecorder = klass({
     this.worker.postMessage({
       command: 'getBuffers',
       jobId: this.jobs.addJob(cb)
-    })
+    });
   },
   export: function (callback, type) {
     this.exportWAV(function (blob) {
-      if (type == "" || type == "blob") {
+      if (type === "" || type === "blob") {
         callback(blob);
-      } else if (type == "URL") {
+      } else if (type === "URL") {
         var url = (window.URL || window.webkitURL).createObjectURL(blob);
         callback(url);
       }

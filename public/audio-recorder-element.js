@@ -22,6 +22,7 @@ choona.registerElement(choona.ElementView.extend({
   attachedCallback: function () {
     //this.render();
     this.audioRecorder = new AudioRecorder();
+    this.permissionGiven = false;
   },
   detachedCallback: function () {
     console.log("I am ending " + this.tagName);
@@ -57,7 +58,15 @@ choona.registerElement(choona.ElementView.extend({
     // id="stop">Stop</button> <a id="save">Save</a>';
   },
   onRecordStart: function () {
-    this.audioRecorder.startRecording();
+    var self = this;
+    if(this.permissionGiven === false){
+      this.audioRecorder.askPermissionAndSetup(function () {
+        self.permissionGiven = true;
+        self.onRecordStart();
+      });
+    }else{
+      this.audioRecorder.startRecording();
+    }
   },
   onRecordStop: function () {
     this.audioRecorder.stopRecording();
