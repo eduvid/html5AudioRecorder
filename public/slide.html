@@ -5,23 +5,21 @@
     <title></title>
     <script src="bower_components/pdfjs-dist/build/pdf.js" type="application/javascript"></script>
 
+    <script type="application/javascript" src="bower_components/js-klass/klass.js"></script>
+    <script type="application/javascript" src="bower_components/choona.js/dist/choona.js"></script>
+    <script type="application/javascript" src="bower_components/webcomponents.js/webcomponents.js"></script>
+    <script type="application/javascript" src="bower_components/choona.js/src/choona.WeakMap.js"></script>
+    <script type="application/javascript" src="bower_components/choona.js/src/choona.registerElement.js"></script>
+    <script type="application/javascript" src="pdf-slideshow.js"></script>
+
+
 </head>
 <body>
 
 <h1>PDF viewer+ slideshow</h1>
 
-<div>
-    <button id="prev">Previous</button>
-    <button id="next">Next</button>
-    &nbsp; &nbsp;
-    <span>Page: <span id="page_num"></span> / <span id="page_count"></span></span>
-</div>
+<pdf-slideshow src="JavaScript-prototype and Module Pattern.pdf"></pdf-slideshow>
 
 
-<div>
-    <canvas id="the-canvas" style="border:1px solid black"></canvas>
-</div>
-
-<script src="slidemain.js" type="application/javascript"></script>
 </body>
 </html>
