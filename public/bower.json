@@ -16,6 +16,8 @@
   "dependencies": {
     "choona.js": "master",
     "js-klass": "~1.0.0",
-    "webcomponents.js": "~0.6.0"
+    "webcomponents.js": "~0.6.0",
+    "binaryjs": "~0.2.1",
+    "pdfjs-dist": "~1.1.38"
   }
 }

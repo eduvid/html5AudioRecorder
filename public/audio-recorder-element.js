@@ -5,10 +5,12 @@
 
 choona.registerElement(choona.ElementView.extend({
   tagName: "audio-recorder",
-  template:'<button id="record">Record</button> <button id="stop">Stop</button><br/><a id="save">Save</a>',
+  template:'<button id="uprecord">Server Upload Start</button> <button id="upstop">Server Upload Stop</button> <button id="record">Record</button> <button id="stop">Stop</button><br/><a id="save">Save</a>',
   events:{
     "click #record":"onRecordStart",
-    "click #stop":"onRecordStop"
+    "click #stop":"onRecordStop",
+    "click #uprecord":"serverRecordStart",
+    "click #upstop":"serverRecordStop"
   },
   initialize: function () {
     choona.ElementView.apply(this, arguments);
@@ -68,11 +70,32 @@ choona.registerElement(choona.ElementView.extend({
       this.audioRecorder.startRecording();
     }
   },
+  serverRecordStart: function () {
+    var self = this;
+    if(this.permissionGiven === false){
+      this.audioRecorder.askPermissionAndSetup(function () {
+        self.permissionGiven = true;
+        self.audioStreamer = new AudioStreamer(self.audioRecorder);
+        self.serverRecordStart();
+      });
+    }else{
+      this.audioRecorder.startRecording();
+      this.audioStreamer.init();
+    }
+  },
+  serverRecordStop: function () {
+    this.audioRecorder.stopRecording();
+    this.audioStreamer.clear();
+  },
   onRecordStop: function () {
     this.audioRecorder.stopRecording();
     this.createDownloadLink();
     this.createPlayback();
+    this.uploadBlobToServer();
+  },
+  uploadBlobToServer: function () {
+    var audioStreamer = new AudioStreamer(this.audioRecorder, function () {
+      audioStreamer.uploadLatestBlobToServer();
+    });
   }
-
-
 }));
