@@ -47,12 +47,13 @@ choona.registerElement(choona.ElementView.extend({
   createPlayback: function () {
   },
   render: function () {
-    this.$.innerHTML = '<h1>Pdf Slideshow</h1><div>' +
-    '<button id="prev">Previous</button>' +
-    '<button id="next">Next</button>&nbsp; &nbsp;' +
-    '<span>Page: <span id="page_num"></span> / <span id="page_count"></span></span>' +
-    '</div><div><canvas id="the-canvas" style="border:1px solid black"></canvas></div>' +
-    '<boot-progressbar></boot-progressbar>';
+    this.$.innerHTML = '<div class="body"><canvas id="the-canvas"></canvas></div>' +
+    '<footer class="flex-container">' +
+    '<span class="btnIcon" id="prev" title="Previous"></span>' +
+    '<span class="btnIcon" id="next" title="Next"></span>' +
+    '<boot-progressbar class="flex-item"></boot-progressbar>' +
+    '<span class="status"><span id="page_num"></span> / <span id="page_count"></span></span>' +
+    '</footer>';
 
   },
   loadPdf: function () {

@@ -1,5 +1,122 @@
 
 pdf-slideshow {
     display: block;
+    width: 500px;
+    box-sizing: border-box;
+}
+
+pdf-slideshow boot-progressbar {
+    float: left;
+    width: 65%;
+}
+pdf-slideshow .body canvas {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    border: 1px solid rgb(45, 33, 47);
+    /*margin-left: 2px;*/
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+pdf-slideshow #prev {
+    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAQAAACR313BAAABFklEQVQYlWNgoBJ4xvVrMiMfIzuI/Z/5Zx0jDyMbXPK7/O8zfz4z2jBKMjB8Fvt94O8nRnNGMZik49+X////+M5YwKjx1fTvYzA7l1EDLPkj/9+v/0Dw6Bdj+5HGf99hbEZdkI2LQNwX/x/9v/Vn/WUQ+zWQfeM3YxdQGiJ5EwqfwtkXINJF0nf3nf8PgSf+zHgKYx+DSDNyMOosX3X477H/x/7v+824fPrBI/+gbLA0IyMno1pxw47P+/5v+804iTG4umXHNzAbJA0CjKyMMq5RWx5sALnWiFEmIHHz0w0Ql0MAIzOjEJ/Nkq0gvwLZwhJOK/aDwgAeakBLuBm1ISEFZPMy6jFaMUqghDojGyKcGdmBStgBsMWpEVd7QCQAAAAASUVORK5CYII=")
+}
+
+pdf-slideshow #next {
+
+    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAQAAACR313BAAAA5ElEQVQYV2NgoAh8r2HkYWQDsV7zIthw8P//y0N2RoxcjIzvBRBsJOnP/9+9boxkFDgpjGAzMsGlXwPh719rOxM1EGxGSUYWqPQjMHz9/+ohBPv8TnUNRnaw9E04RGafO8qoxcgBlD4PhfNenoezpz0VmsToxigAlD4GhIf/pl4TXopgM85lzGDUAeve93/dD4sjjBPV0xBsxihGNUZOoAf//5/5SGwzYxOjZ5Q2gs0ozcgKdvmteazljMWMVoxC+0UQbEZmqL8ZZRhtgbZwMzIyMiHY8FBjZGfkBfuQAagAzoYBAF1Ip53m5cgbAAAAAElFTkSuQmCC")
+
+}
+pdf-slideshow boot-progressbar .progress-bar {
+    background-color: #FD0000;
+}
+
+pdf-slideshow footer {
+    background: rgb(45, 33, 47);
+    padding-top: 4px;
+    padding-bottom: 4px;
+    /*margin-left: 2px;*/
+    /*margin-bottom: 2px;*/
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    /*margin-right: 2px;*/
+}
+pdf-slideshow .status {
+    float: right;
+    margin-right: 15px;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+}
+pdf-slideshow .btnIcon {
+    background-repeat: no-repeat;
+    width: 10px;
+    padding: 2px;
+    height: 9px;
+    margin-left: 10px;
+    opacity: 0.9;
+    transform: scale(1.5);
+}
+pdf-slideshow .btnIcon:hover {
+    opacity: 1;
+}
+
+.flex-container {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-direction: normal;
+    -moz-box-direction: normal;
+    -webkit-box-orient: horizontal;
+    -moz-box-orient: horizontal;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-flex-wrap: nowrap;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    -webkit-box-pack: justify;
+    -moz-box-pack: justify;
+    -webkit-justify-content: space-between;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-align-content: flex-start;
+    -ms-flex-line-pack: start;
+    align-content: flex-start;
+    -webkit-box-align: center;
+    -moz-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+
+.flex-item:nth-child(1) {
+    -webkit-box-ordinal-group: 1;
+    -moz-box-ordinal-group: 1;
+    -webkit-order: 0;
+    -ms-flex-order: 0;
+    order: 0;
+    -webkit-box-flex: 1;
+    -moz-box-flex: 1;
+    -webkit-flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    -webkit-align-self: auto;
+    -ms-flex-item-align: auto;
+    align-self: auto;
+}
+
+/*
+    Legacy Firefox implementation treats all flex containers
+    as inline-block elements.
+*/
+
+@-moz-document url-prefix() {
+    .flex-container {
+        width: 100%;
+        -moz-box-sizing: border-box;
+    }
 
 }

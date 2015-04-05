@@ -73,6 +73,6 @@ choona.registerElement(choona.ElementView.extend({
       p = 0;
     }
     this.$.querySelector(".progress-bar").style.width = p + "%";
-    this.$.querySelector("span.status").innerHTML = '<span class="percentage">'+ p +'%</span><span class="value">'+value+'</span>';
+    this.$.querySelector("span.status").innerHTML = '<span class="percentage">'+ p +'%</span><span class="value">'+ value + '</span>';
   }
 }));
