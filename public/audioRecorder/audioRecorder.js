@@ -5,12 +5,16 @@
 
 choona.registerElement(choona.ElementView.extend({
   tagName: "audio-recorder",
-  template:'<button id="uprecord">Server Upload Start</button> <button id="upstop">Server Upload Stop</button> <button id="record">Record</button> <button id="stop">Stop</button><br/><a id="save">Save</a>',
+  template:'',
+  accessors:{
+    status: {
+      type: "string",
+      default:""
+    }
+  },
   events:{
     "click #record":"onRecordStart",
-    "click #stop":"onRecordStop",
-    "click #uprecord":"serverRecordStart",
-    "click #upstop":"serverRecordStop"
+    "click #stop":"onRecordStop"
   },
   initialize: function () {
     choona.ElementView.apply(this, arguments);
@@ -18,8 +22,12 @@ choona.registerElement(choona.ElementView.extend({
     this.state.setInitialState("STOPPED");
 
   },
+  render: function () {
+    this.$.innerHTML = '<div><button title="Record" id="record"></button><button title="STOP" class="pulsate" id="stop"></button><a title="Download" id="save"></a></div>' +
+    '<audio controls>Your browser does not support the audio element.</audio>';
+  },
   createdCallback: function () {
-
+    this.render();
   },
   attachedCallback: function () {
     //this.render();
@@ -37,7 +45,7 @@ choona.registerElement(choona.ElementView.extend({
   createPlayback: function () {
     var self = this;
     this.audioRecorder.export(function (url) {
-      var ele = document.getElementById(self.$.getAttribute("playbackSource"));
+      var ele = self.$.querySelector("audio");
       ele.src = url;
     }, "URL");
   },
@@ -53,11 +61,8 @@ choona.registerElement(choona.ElementView.extend({
       var link = self.$.querySelector("#save");
       link.href = url;
       link.download = filename;
+      self.$.status = "recorded";
     }, "URL");
-  },
-  render: function () {
-    //this.$.innerHTML = '<button id="record">Record</button> <button id="pause">Pause</button> <button
-    // id="stop">Stop</button> <a id="save">Save</a>';
   },
   onRecordStart: function () {
     var self = this;
@@ -68,6 +73,8 @@ choona.registerElement(choona.ElementView.extend({
       });
     }else{
       this.audioRecorder.startRecording();
+      //Add Classed recording
+      this.$.status = "recording";
     }
   },
   serverRecordStart: function () {
@@ -75,27 +82,29 @@ choona.registerElement(choona.ElementView.extend({
     if(this.permissionGiven === false){
       this.audioRecorder.askPermissionAndSetup(function () {
         self.permissionGiven = true;
-        self.audioStreamer = new AudioStreamer(self.audioRecorder);
+        //self.audioStreamer = new AudioStreamer(self.audioRecorder);
         self.serverRecordStart();
       });
     }else{
       this.audioRecorder.startRecording();
-      this.audioStreamer.init();
+      //this.audioStreamer.init();
     }
   },
   serverRecordStop: function () {
     this.audioRecorder.stopRecording();
-    this.audioStreamer.clear();
+    //this.audioStreamer.clear();
   },
   onRecordStop: function () {
+    this.$.status = "processing";
     this.audioRecorder.stopRecording();
     this.createDownloadLink();
     this.createPlayback();
     this.uploadBlobToServer();
+
   },
   uploadBlobToServer: function () {
-    var audioStreamer = new AudioStreamer(this.audioRecorder, function () {
-      audioStreamer.uploadLatestBlobToServer();
-    });
+    //var audioStreamer = new AudioStreamer(this.audioRecorder, function () {
+    //  audioStreamer.uploadLatestBlobToServer();
+    //});
   }
 }));
