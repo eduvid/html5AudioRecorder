@@ -23,7 +23,7 @@ choona.registerElement(choona.ElementView.extend({
 
   },
   render: function () {
-    this.$.innerHTML = '<div><button title="Record" id="record"></button><button title="STOP" class="pulsate" id="stop"></button><a title="Download" id="save"></a></div>' +
+    this.$.innerHTML = '<div><button title="Record" id="record"></button><button title="STOP" class="pulsate" id="stop"></button><timeblock></timeblock><a title="Download" id="save"></a></div>' +
     '<audio controls>Your browser does not support the audio element.</audio>';
   },
   createdCallback: function () {
@@ -62,6 +62,7 @@ choona.registerElement(choona.ElementView.extend({
       link.href = url;
       link.download = filename;
       self.$.status = "recorded";
+      self.$.querySelector("timeblock").innerHTML = "";
     }, "URL");
   },
   onRecordStart: function () {
@@ -75,6 +76,7 @@ choona.registerElement(choona.ElementView.extend({
       this.audioRecorder.startRecording();
       //Add Classed recording
       this.$.status = "recording";
+      this.$.querySelector("timeblock").innerHTML = "<stop-watch></stop-watch>";
     }
   },
   serverRecordStart: function () {

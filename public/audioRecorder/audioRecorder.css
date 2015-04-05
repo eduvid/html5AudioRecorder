@@ -28,6 +28,15 @@ audio-recorder[status="recorded"] #save {
   display: block;
 }
 
+audio-recorder timeblock{
+  color: #4D4848;
+  font-size: large;
+  float: left;
+  margin-top: 9px;
+  padding-left: 10px;
+
+}
+
 
 audio-recorder #record {
   background: url(./../images/record-icon.svg);
