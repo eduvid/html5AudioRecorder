@@ -15,3 +15,16 @@ This repo contains HTML5 based slidecasting experiemnts
 * Cursor recoding and playback - todo
 * Create a Canvas Based Player - everything (image, html, pdf slide, played in canvas) - todo
 * Crate a Browser based presentation maker software - todo
+
+# How to run demo
+
+```bash
+git clone git@github.com:eduvid/slidecast-experiments.git
+cd slidecast-experiments
+npm install
+cd public
+bower install
+cd ..
+node bin/www
+```
+now open localhost:3000
