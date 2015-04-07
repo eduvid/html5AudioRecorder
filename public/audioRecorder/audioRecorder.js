@@ -3,36 +3,43 @@
  */
 
 
+window.AudioContext = window.AudioContext || window.webkitAudioContext;
+
+navigator.getUserMedia = (navigator.getUserMedia ||
+navigator.mozGetUserMedia ||
+navigator.msGetUserMedia ||
+navigator.webkitGetUserMedia);
+
+
 choona.registerElement(choona.ElementView.extend({
   tagName: "audio-recorder",
-  template:'',
+  template:"",
   accessors:{
     status: {
       type: "string",
       default:""
     }
   },
+  methods:["start, stop, pause, resume"],
   events:{
-    "click #record":"onRecordStart",
-    "click #stop":"onRecordStop"
+    "click #record":"start",
+    "click #stop":"stop",
+    "click #pause":"pause",
+    "click #resume":"resume"
   },
   initialize: function () {
     choona.ElementView.apply(this, arguments);
-    this.state = new Enum("RECORDING", "PAUSED", "STOPPED");
-    this.state.setInitialState("STOPPED");
-
   },
   render: function () {
     this.$.innerHTML = '<div><button title="Record" id="record"></button><button title="STOP" class="pulsate" id="stop"></button><timeblock></timeblock><a title="Download" id="save"></a></div>' +
     '<audio controls>Your browser does not support the audio element.</audio>';
   },
   createdCallback: function () {
-    this.render();
+    this.$.status = "inactive";
+    this.permissionGiven = false;
   },
   attachedCallback: function () {
-    //this.render();
-    this.audioRecorder = new AudioRecorder();
-    this.permissionGiven = false;
+    this.render();
   },
   detachedCallback: function () {
     console.log("I am ending " + this.tagName);
@@ -42,71 +49,69 @@ choona.registerElement(choona.ElementView.extend({
     //  this.render();
     //}
   },
-  createPlayback: function () {
-    var self = this;
-    this.audioRecorder.export(function (url) {
-      var ele = self.$.querySelector("audio");
-      ele.src = url;
-    }, "URL");
+  createPlayback: function (url) {
+    var ele = this.$.querySelector("audio");
+    ele.src = url;
   },
-  getBlob: function (cb) {
-    this.audioRecorder.export(function (blob) {
-      cb(blob);
-    }, "blob");
+  createDownloadLink: function (url) {
+    var filename = "recording-" + (new Date()).getTime() + ".ogg";
+    var link = this.$.querySelector("#save");
+    link.href = url;
+    link.download = filename;
+    this.$.status = "recorded";
+    this.$.querySelector("timeblock").innerHTML = "";
   },
-  createDownloadLink: function () {
-    var self = this;
-    this.audioRecorder.export(function (url) {
-      var filename = 'recording-' + (new Date).getTime() + '.wav';
-      var link = self.$.querySelector("#save");
-      link.href = url;
-      link.download = filename;
-      self.$.status = "recorded";
-      self.$.querySelector("timeblock").innerHTML = "";
-    }, "URL");
-  },
-  onRecordStart: function () {
+  start: function () {
     var self = this;
     if(this.permissionGiven === false){
-      this.audioRecorder.askPermissionAndSetup(function () {
+      this.askPermissionAndSetup(function (stream) {
         self.permissionGiven = true;
-        self.onRecordStart();
+        if(window.MediaRecorder === undefined) {
+          window.alert("MediaRecorder API not present on your Browser, Please use Firefox 25+");
+          return;
+        }
+        self.mediaRecorder = new MediaRecorder(stream);
+        self.mediaRecorder.ondataavailable = function (e) {
+          self.$.status = "recorded";
+          var url = window.URL.createObjectURL(e.data);
+          self.createDownloadLink(url);
+          self.createPlayback(url);
+        };
+        self.start();
       });
     }else{
-      this.audioRecorder.startRecording();
-      //Add Classed recording
       this.$.status = "recording";
-      this.$.querySelector("timeblock").innerHTML = "<stop-watch></stop-watch>";
+      this.$.querySelector("timeblock").innerHTML = "<stop-watch autoStart></stop-watch>";
+      this.stopWatch = this.$.querySelector("stop-watch");
+      this.mediaRecorder.start();
+      //Add Classed recording
     }
   },
-  serverRecordStart: function () {
-    var self = this;
-    if(this.permissionGiven === false){
-      this.audioRecorder.askPermissionAndSetup(function () {
-        self.permissionGiven = true;
-        //self.audioStreamer = new AudioStreamer(self.audioRecorder);
-        self.serverRecordStart();
+  askPermissionAndSetup: function (cb) {
+    if (navigator.getUserMedia) {
+      var constraints = { audio: true };
+      navigator.getUserMedia(constraints, function (stream) {
+        cb(stream);
+      }, function (err) {
+        window.alert("Error " + err);
+        console.log("The following error occured: " + err);
       });
-    }else{
-      this.audioRecorder.startRecording();
-      //this.audioStreamer.init();
     }
   },
-  serverRecordStop: function () {
-    this.audioRecorder.stopRecording();
-    //this.audioStreamer.clear();
+  pause: function () {
+    this.$.status = "paused";
+    this.mediaRecorder.pause();
+    this.stopWatch.pause();
   },
-  onRecordStop: function () {
+  resume: function () {
+    this.$.status = "recording";
+    this.mediaRecorder.resume();
+    this.stopWatch.resume();
+  },
+  stop: function () {
+    var self = this;
     this.$.status = "processing";
-    this.audioRecorder.stopRecording();
-    this.createDownloadLink();
-    this.createPlayback();
-    this.uploadBlobToServer();
-
-  },
-  uploadBlobToServer: function () {
-    //var audioStreamer = new AudioStreamer(this.audioRecorder, function () {
-    //  audioStreamer.uploadLatestBlobToServer();
-    //});
+    this.mediaRecorder.stop();
+    this.stopWatch.stop();
   }
 }));

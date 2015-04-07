@@ -19,6 +19,7 @@ choona.registerElement(choona.ElementView.extend({
     this.constructor.parent.apply(this, arguments);
   },
   createdCallback: function () {
+    this.$.textContent = "00:00";
   },
   attachedCallback: function () {
     if(this.$.autoStart === true){

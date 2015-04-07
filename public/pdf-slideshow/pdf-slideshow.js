@@ -44,8 +44,6 @@ choona.registerElement(choona.ElementView.extend({
   },
   attributeChangedCallback: function (attrName, oldVal, newVal) {
   },
-  createPlayback: function () {
-  },
   render: function () {
     this.$.innerHTML = '<div class="body"><canvas id="the-canvas"></canvas></div>' +
     '<footer class="flex-container">' +

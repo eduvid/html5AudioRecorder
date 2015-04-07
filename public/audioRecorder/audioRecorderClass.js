@@ -20,11 +20,7 @@
 
 //This will be audio recorder file
 var WORKER_PATH = 'recorderWorker.js';
-window.AudioContext = window.AudioContext || window.webkitAudioContext;
 
-if (!navigator.getUserMedia){
-  navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-}
 if (!navigator.cancelAnimationFrame){
   navigator.cancelAnimationFrame = navigator.webkitCancelAnimationFrame || navigator.mozCancelAnimationFrame;
 }
@@ -65,13 +61,7 @@ var AudioRecorder = klass({
   gotStream: function (stream) {
     var self = this;
     var audioInput = this.audioContext.createMediaStreamSource(stream);
-    var node;
-    if(!this.audioContext.createScriptProcessor){
-      node = this.audioContext.createJavaScriptNode(this.config.bufferLen, 2, 2);
-    } else {
-      node = this.audioContext.createScriptProcessor(this.config.bufferLen, 2, 2);
-    }
-
+    var node = this.audioContext.createScriptProcessor(this.config.bufferLen, 2, 2);
     audioInput.connect(node);
     node.connect(this.audioContext.destination);
     node.onaudioprocess = function(e){
