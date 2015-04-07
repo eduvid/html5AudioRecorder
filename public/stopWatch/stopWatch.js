@@ -9,15 +9,39 @@ choona.registerElement(choona.ElementView.extend({
   },
   template: '',
   accessors: {
+    autoStart: {
+      type:"boolean",
+      default: false
+    }
   },
-  methods: ["start", "stop", "pause"],
+  methods: ["start", "stop", "pause", "resume"],
   initialize: function () {
     this.constructor.parent.apply(this, arguments);
   },
   createdCallback: function () {
   },
   attachedCallback: function () {
-    this.start();
+    if(this.$.autoStart === true){
+      this.start();
+    }
+  },
+  pause: function () {
+    this.pausedTime = (new Date()).getTime();
+    window.clearInterval(this.id);
+    this.id = undefined;
+  },
+  resume: function () {
+    var t = (new Date()).getTime();
+    var d = t - this.pausedTime;
+    this.startTime = this.startTime + d;
+    this.startInterval();
+  },
+  startInterval: function () {
+    var self = this;
+    this.id = window.setInterval(function () {
+      var d = (new Date()).getTime() - self.startTime;
+      self.$.textContent = self.convertToTime(d);
+    }, 1000);
   },
   start: function () {
     this.startTime = (new Date()).getTime();
@@ -25,11 +49,8 @@ choona.registerElement(choona.ElementView.extend({
     if(this.id !== undefined){
       window.clearInterval(this.id);
     }
-    self.$.textContent = "00:00";
-    this.id = window.setInterval(function () {
-      var d = (new Date()).getTime() - self.startTime;
-      self.$.textContent = self.convertToTime(d);
-    }, 1000);
+    this.$.textContent = "00:00";
+    this.startInterval();
   },
   convertToTime: function (ms) {
     var s = Math.floor(ms/1000);
