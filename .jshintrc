@@ -32,7 +32,8 @@
     "Event": true,
     "MediaRecorder": true,
     "navigator": true,
-    "Date": true
+    "Date": true,
+    "performance": true
 	}
 }
 

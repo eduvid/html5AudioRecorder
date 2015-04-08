@@ -7,19 +7,20 @@ choona.registerElement(choona.ElementView.extend({
   tagName: "stop-watch",
   events:{
   },
-  template: '',
+  template: "",
   accessors: {
     autoStart: {
       type:"boolean",
       default: false
     }
   },
-  methods: ["start", "stop", "pause", "resume"],
+  methods: ["start", "stop", "pause", "resume", "getTime"],
   initialize: function () {
     this.constructor.parent.apply(this, arguments);
   },
   createdCallback: function () {
     this.$.textContent = "00:00";
+    this.watch = new stopWatchClass();
   },
   attachedCallback: function () {
     if(this.$.autoStart === true){
@@ -27,25 +28,22 @@ choona.registerElement(choona.ElementView.extend({
     }
   },
   pause: function () {
-    this.pausedTime = (new Date()).getTime();
+    this.watch.pause();
     window.clearInterval(this.id);
     this.id = undefined;
   },
   resume: function () {
-    var t = (new Date()).getTime();
-    var d = t - this.pausedTime;
-    this.startTime = this.startTime + d;
+    this.watch.resume();
     this.startInterval();
   },
   startInterval: function () {
     var self = this;
     this.id = window.setInterval(function () {
-      var d = (new Date()).getTime() - self.startTime;
-      self.$.textContent = self.convertToTime(d);
+      self.$.textContent = self.convertToTime(self.watch.getTime());
     }, 1000);
   },
   start: function () {
-    this.startTime = (new Date()).getTime();
+    this.watch.start();
     var self = this;
     if(this.id !== undefined){
       window.clearInterval(this.id);
@@ -65,8 +63,12 @@ choona.registerElement(choona.ElementView.extend({
     }
   },
   stop: function () {
+    this.watch.stop();
     window.clearInterval(this.id);
     this.id = undefined;
+  },
+  getTime: function () {
+    return this.watch.getTime();
   },
   detachedCallback: function () {
     this.stop();
