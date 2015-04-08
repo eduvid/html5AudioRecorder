@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="application/javascript" src="bower_components/webcomponents.js/webcomponents.js"></script>
+    <script type="application/javascript" src="bower_components/js-klass/klass.js"></script>
+    <script type="application/javascript" src="bower_components/choona.js/dist/choona.js"></script>
+    <script type="application/javascript" src="bower_components/choona.js/src/choona.WeakMap.js"></script>
+    <script type="application/javascript" src="bower_components/choona.js/src/choona.registerElement.js"></script>
+    <script type="application/javascript" src="bower_components/binaryjs/dist/binary.js"></script>
+
+
+    <!--<script type="application/javascript" src="stopWatch/stopWatchClass.js"></script>-->
+    <!--<script type="application/javascript" src="stopWatch/stopWatch.js"></script>-->
+
+    <!--<script type="application/javascript" src="audioRecorder/audioRecorder.js"></script>-->
+    <!--<link rel="stylesheet" href="audioRecorder/audioRecorder.css"/>-->
+
+    <script type="application/javascript" src="audio-record-stream/MediaStreamStreamer.js"></script>
+    <script type="application/javascript">
+        var a = new MediaStreamStreamer({
+            ready : function () {
+                a.start();
+                window.setTimeout(function () {
+                    console.log("Ending Audio");
+                    a.stop();
+                }, 15000)
+            }
+        });
+
+    </script>
+
+
+</head>
+<body>
+
+<h1>HTML5 Audio Recorder & Download + Upload to Server - works great on Firefox 25+</h1>
+
+<p>This is a Sample Audio Recorder, It download audio in ogg format, as well as it can save to server using binarySocket</p>
+
+<audio-recorder></audio-recorder>
+
+
+
+
+</body>
+</html>

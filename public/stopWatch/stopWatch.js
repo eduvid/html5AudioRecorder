@@ -20,7 +20,7 @@ choona.registerElement(choona.ElementView.extend({
   },
   createdCallback: function () {
     this.$.textContent = "00:00";
-    this.watch = new stopWatchClass();
+    this.watch = new StopWatchClass();
   },
   attachedCallback: function () {
     if(this.$.autoStart === true){

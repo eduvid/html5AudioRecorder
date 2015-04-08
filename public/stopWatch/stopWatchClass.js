@@ -3,7 +3,7 @@
  */
 
 
-var stopWatchClass = klass({
+var StopWatchClass = klass({
   initialize: function () {
     this.state = "inactive";
   },

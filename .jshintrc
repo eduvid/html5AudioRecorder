@@ -33,7 +33,10 @@
     "MediaRecorder": true,
     "navigator": true,
     "Date": true,
-    "performance": true
+    "performance": true,
+    "klass": true,
+    "BinaryClient": true,
+    "StopWatchClass": true
 	}
 }
 

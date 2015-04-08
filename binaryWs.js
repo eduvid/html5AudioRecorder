@@ -10,9 +10,20 @@ var binaryServer = BinaryServer({port: 9001});
 
 binaryServer.on('connection', function(client) {
   console.log("new connection");
+
+  var fileWriter = fs.createWriteStream("recording-"+ (new Date).getTime() +".ogg");
+
   client.on('stream', function(stream, meta) {
     console.log('Got a Stream from Client');
-    var file = fs.createWriteStream("recording-"+ (new Date).getTime() +".wav");
-    stream.pipe(file);
+    stream.pipe(fileWriter);
+    stream.on('end', function() {
+      fileWriter.end();
+    });
+  });
+  
+  client.on('close', function() {
+    if (fileWriter != null) {
+      fileWriter.end();
+    }
   });
 });
