@@ -21,7 +21,7 @@
 		"module": true,
 		"console": true,
 		"document":true,
-    "choona": true,
+    "pitana": true,
     "jQuery": true,
     "Element": true,
     "history": true,

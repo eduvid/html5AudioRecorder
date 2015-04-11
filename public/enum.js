@@ -1,4 +1,4 @@
-var Enum = klass({
+var Enum = pitana.klass({
   initialize: function () {
     this.currentState = undefined;
     this.allStates = Array.prototype.slice.call(arguments);

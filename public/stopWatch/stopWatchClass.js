@@ -3,7 +3,7 @@
  */
 
 
-var StopWatchClass = klass({
+var StopWatchClass = pitana.klass({
   initialize: function () {
     this.state = "inactive";
   },

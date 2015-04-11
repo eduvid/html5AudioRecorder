@@ -1,6 +1,6 @@
 //Narendra Sisodiya
 
-var MediaRecorderWrapper = klass({
+var MediaRecorderWrapper = pitana.klass({
   initialize: function () {
     this.__status__ = "inactive";
     this.__permissionGiven__ = false;

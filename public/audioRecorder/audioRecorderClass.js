@@ -27,7 +27,7 @@ if (!navigator.cancelAnimationFrame){
 if (!navigator.requestAnimationFrame){
   navigator.requestAnimationFrame = navigator.webkitRequestAnimationFrame || navigator.mozRequestAnimationFrame;
 }
-var AudioRecorder = klass({
+var AudioRecorder = pitana.klass({
   initialize: function () {
     this.audioContext = new AudioContext();
     var self = this;

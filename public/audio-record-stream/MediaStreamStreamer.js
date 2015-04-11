@@ -15,7 +15,7 @@ navigator.msGetUserMedia ||
 navigator.webkitGetUserMedia);
 
 
-var MediaStreamStreamer = klass({
+var MediaStreamStreamer = pitana.klass({
   initialize: function (config) {
 
     this.__status__ = "inactive";

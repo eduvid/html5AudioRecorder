@@ -11,7 +11,7 @@ navigator.msGetUserMedia ||
 navigator.webkitGetUserMedia);
 
 
-choona.registerElement(choona.ElementView.extend({
+pitana.registerElement(pitana.HTMLElement.extend({
   tagName: "audio-recorder",
   template:"",
   accessors:{
@@ -28,7 +28,7 @@ choona.registerElement(choona.ElementView.extend({
     "click #resume":"resume"
   },
   initialize: function () {
-    choona.ElementView.apply(this, arguments);
+    pitana.HTMLElement.apply(this, arguments);
   },
   render: function () {
     this.$.innerHTML = '<div><button title="Record" id="record"></button><button title="STOP" class="pulsate" id="stop"></button><timeblock></timeblock><a title="Download" id="save"></a></div>' +

@@ -3,7 +3,7 @@
  */
 
 
-choona.registerElement(choona.ElementView.extend({
+pitana.registerElement(pitana.HTMLElement.extend({
   tagName: "stop-watch",
   events:{
   },
@@ -16,7 +16,7 @@ choona.registerElement(choona.ElementView.extend({
   },
   methods: ["start", "stop", "pause", "resume", "getTime"],
   initialize: function () {
-    this.constructor.parent.apply(this, arguments);
+    pitana.HTMLElement.apply(this, arguments);
   },
   createdCallback: function () {
     this.$.textContent = "00:00";

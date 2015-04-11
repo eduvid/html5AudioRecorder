@@ -2,7 +2,7 @@
  * Created by narendra on 3/4/15.
  */
 
-var JobCollection = klass({
+var JobCollection = pitana.klass({
   initialize: function () {
     this.jobId = 0;
     this.callbacks = {};

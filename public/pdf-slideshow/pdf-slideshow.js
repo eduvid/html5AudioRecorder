@@ -3,10 +3,11 @@
  */
 
 //TODO - Arrow key navigation !!
+//TODO - Click on Progressbar must navigate to new page..
 
-choona.registerElement(choona.ElementView.extend({
+pitana.registerElement(pitana.HTMLElement.extend({
   tagName: "pdf-slideshow",
-  template:'',
+  template:"",
   accessors:{
     src:{
       type: "string"
@@ -22,7 +23,7 @@ choona.registerElement(choona.ElementView.extend({
     "click #prev":"onPrevPage"
   },
   initialize: function () {
-    this.constructor.parent.apply(this, arguments);
+    pitana.HTMLElement.apply(this, arguments);
   },
   createdCallback: function () {
 
@@ -49,7 +50,7 @@ choona.registerElement(choona.ElementView.extend({
     '<footer class="flex-container">' +
     '<span class="btnIcon" id="prev" title="Previous"></span>' +
     '<span class="btnIcon" id="next" title="Next"></span>' +
-    '<boot-progressbar class="flex-item"></boot-progressbar>' +
+    '<pt-progressbar style="width:60%;" class="flex-item"></pt-progressbar>' +
     '<span class="status"><span id="page_num"></span> / <span id="page_count"></span></span>' +
     '</footer>';
 
@@ -64,7 +65,7 @@ choona.registerElement(choona.ElementView.extend({
     this.pdfDoc = pdfDoc;
     this.$.querySelector('#page_count').textContent = this.pdfDoc.numPages;
 
-    this.$.querySelector("boot-progressbar").max = this.pdfDoc.numPages;
+    this.$.querySelector("pt-progressbar").max = this.pdfDoc.numPages;
     this.$.currentPage = 1;
   },
   renderPage: function (num) {
@@ -98,9 +99,9 @@ choona.registerElement(choona.ElementView.extend({
   },
   onPageChange: function () {
     this.queueRenderPage(this.$.currentPage);
-    //We are trigger currentPageChange event so that outside work can get to now about current state of pdf slidesohw.
-    this.trigger("currentPageChange");
-    this.$.querySelector("boot-progressbar").value = this.$.currentPage;
+    ////We are trigger currentPageChange event so that outside work can get to now about current state of pdf slidesohw.
+    //this.trigger("currentPageChange");
+    this.$.querySelector("pt-progressbar").value = this.$.currentPage;
   },
   onNextPage: function () {
     if (this.$.currentPage >= this.pdfDoc.numPages) {
