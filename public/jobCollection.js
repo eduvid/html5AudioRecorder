@@ -3,18 +3,18 @@
  */
 
 var JobCollection = pitana.klass({
-  initialize: function () {
+  initialize: function() {
     this.jobId = 0;
     this.callbacks = {};
   },
-  addJob: function (cb) {
+  addJob: function(cb) {
     this.jobId = this.jobId + 1;
     this.callbacks[this.jobId] = cb;
     return this.jobId;
   },
-  executeJob: function (jobId, data) {
+  executeJob: function(jobId, data) {
     var cb = this.callbacks[jobId];
-    if(typeof cb === "function"){
+    if (typeof cb === "function") {
       cb(data);
     }
     delete this.callbacks[jobId];

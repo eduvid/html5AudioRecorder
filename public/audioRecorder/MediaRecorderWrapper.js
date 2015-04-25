@@ -1,24 +1,26 @@
 //Narendra Sisodiya
 
 var MediaRecorderWrapper = pitana.klass({
-  initialize: function () {
+  initialize: function() {
     this.__status__ = "inactive";
     this.__permissionGiven__ = false;
   },
-  start: function (timeInterval) {
+  start: function(timeInterval) {
     var self = this;
-    if(this.__permissionGiven__ === false){
+    if (this.__permissionGiven__ === false) {
       if (navigator.getUserMedia) {
-        var constraints = { audio: true };
-        navigator.getUserMedia(constraints, function (stream) {
+        var constraints = {
+          audio: true
+        };
+        navigator.getUserMedia(constraints, function(stream) {
           self.__permissionGiven__ = true;
           self.stream = stream;
-          if(window.MediaRecorder === undefined) {
+          if (window.MediaRecorder === undefined) {
             window.alert("MediaRecorder API not present on your Browser, Please use Firefox 25+");
             return;
           }
           self.mediaRecorder = new MediaRecorder(stream);
-          self.mediaRecorder.ondataavailable = function (e) {
+          self.mediaRecorder.ondataavailable = function(e) {
             self.__status__ = "recorded";
 
             // ============= Fire some EVent or Callback to get the Data ====
@@ -28,31 +30,31 @@ var MediaRecorderWrapper = pitana.klass({
             //self.createPlayback(url);
           };
           self.start(timeInterval);
-        }, function (err) {
+        }, function(err) {
           window.alert("Error " + err);
           console.log("The following error occured: " + err);
         });
       }
-    }else{
+    } else {
       this.__status__ = "recording";
       this.mediaRecorder.start();
       //Add Classed recording
     }
   },
-  pause: function () {
+  pause: function() {
     this.__status__ = "paused";
     this.mediaRecorder.pause();
   },
-  resume: function () {
+  resume: function() {
     this.__status__ = "recording";
     this.mediaRecorder.resume();
   },
-  stop: function () {
+  stop: function() {
     var self = this;
     this.__status__ = "processing";
     this.mediaRecorder.stop();
   },
-  getStatus: function () {
+  getStatus: function() {
     return this.__status__;
   }
 });

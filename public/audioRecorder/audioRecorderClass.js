@@ -21,14 +21,14 @@
 //This will be audio recorder file
 var WORKER_PATH = 'recorderWorker.js';
 
-if (!navigator.cancelAnimationFrame){
+if (!navigator.cancelAnimationFrame) {
   navigator.cancelAnimationFrame = navigator.webkitCancelAnimationFrame || navigator.mozCancelAnimationFrame;
 }
-if (!navigator.requestAnimationFrame){
+if (!navigator.requestAnimationFrame) {
   navigator.requestAnimationFrame = navigator.webkitRequestAnimationFrame || navigator.mozRequestAnimationFrame;
 }
 var AudioRecorder = pitana.klass({
-  initialize: function () {
+  initialize: function() {
     this.audioContext = new AudioContext();
     var self = this;
     this.config = {
@@ -37,34 +37,33 @@ var AudioRecorder = pitana.klass({
     this.jobs = new JobCollection();
     this.recording = false;
   },
-  askPermissionAndSetup: function (cb) {
+  askPermissionAndSetup: function(cb) {
     var self = this;
-    navigator.getUserMedia(
-      {
-        "audio": {
-          "mandatory": {
-            "googEchoCancellation": "false",
-            "googAutoGainControl": "false",
-            "googNoiseSuppression": "false",
-            "googHighpassFilter": "false"
-          },
-          "optional": []
-        }
-      }, function (stream) {
-        self.gotStream(stream);
-        cb();
-      }, function(e) {
-        alert('Error getting audio');
-        console.log(e);
-      });
+    navigator.getUserMedia({
+      "audio": {
+        "mandatory": {
+          "googEchoCancellation": "false",
+          "googAutoGainControl": "false",
+          "googNoiseSuppression": "false",
+          "googHighpassFilter": "false"
+        },
+        "optional": []
+      }
+    }, function(stream) {
+      self.gotStream(stream);
+      cb();
+    }, function(e) {
+      alert('Error getting audio');
+      console.log(e);
+    });
   },
-  gotStream: function (stream) {
+  gotStream: function(stream) {
     var self = this;
     var audioInput = this.audioContext.createMediaStreamSource(stream);
     var node = this.audioContext.createScriptProcessor(this.config.bufferLen, 2, 2);
     audioInput.connect(node);
     node.connect(this.audioContext.destination);
-    node.onaudioprocess = function(e){
+    node.onaudioprocess = function(e) {
       self.onAudioProcess(e);
     };
 
@@ -75,15 +74,15 @@ var AudioRecorder = pitana.klass({
         sampleRate: this.audioContext.sampleRate
       }
     });
-    this.worker.onmessage = function(e){
+    this.worker.onmessage = function(e) {
       self.jobs.executeJob(e.data.jobId, e.data.blobOrBuffer);
     };
   },
-  pause: function () {
+  pause: function() {
     this.node.disconnect();
   },
-  onAudioProcess: function (e) {
-    if (!this.recording){
+  onAudioProcess: function(e) {
+    if (!this.recording) {
       return;
     }
     console.log("Recoding, onaudioprocess");
@@ -95,33 +94,35 @@ var AudioRecorder = pitana.klass({
       ]
     });
   },
-  startRecording: function () {
+  startRecording: function() {
     this.clear();
     this.record();
   },
-  stopRecording: function () {
+  stopRecording: function() {
     this.stop();
   },
-  record : function(){
+  record: function() {
     this.recording = true;
   },
 
-  stop : function(){
+  stop: function() {
     this.recording = false;
   },
 
-  clear : function(){
-    this.worker.postMessage({ command: 'clear' });
+  clear: function() {
+    this.worker.postMessage({
+      command: 'clear'
+    });
   },
 
-  getBuffers : function(cb) {
+  getBuffers: function(cb) {
     this.worker.postMessage({
       command: 'getBuffers',
       jobId: this.jobs.addJob(cb)
     });
   },
-  export: function (callback, type) {
-    this.exportWAV(function (blob) {
+  export: function(callback, type) {
+    this.exportWAV(function(blob) {
       if (type === "" || type === "blob") {
         callback(blob);
       } else if (type === "URL") {
@@ -131,23 +132,23 @@ var AudioRecorder = pitana.klass({
     });
   },
 
-  exportWAV : function(cb){
+  exportWAV: function(cb) {
     this.worker.postMessage({
       command: 'exportWAV',
       type: 'audio/wav',
       jobId: this.jobs.addJob(cb)
     });
   },
-  exportMonoWAV : function(cb){
+  exportMonoWAV: function(cb) {
     this.worker.postMessage({
       command: 'exportMonoWAV',
       type: 'audio/wav',
       jobId: this.jobs.addJob(cb)
     });
   },
-  configure : function(cfg){
-    for (var prop in cfg){
-      if (cfg.hasOwnProperty(prop)){
+  configure: function(cfg) {
+    for (var prop in cfg) {
+      if (cfg.hasOwnProperty(prop)) {
         this.config[prop] = cfg[prop];
       }
     }
