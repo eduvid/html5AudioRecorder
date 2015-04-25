@@ -5,3 +5,41 @@ Eduvid-Slidecast-Recorder {
   box-sizing: border-box;
   border: 1px solid #aa2d21;
 }
+
+Eduvid-Slidecast-Recorder .actionMenu button{
+  height: 48px;
+  width: 48px;
+  border: none;
+  padding: 0px;
+  display: none;
+}
+
+
+Eduvid-Slidecast-Recorder[status="inactive"] .actionMenu .start {
+  display: block;
+}
+Eduvid-Slidecast-Recorder[status="recording"] .actionMenu .pause {
+  display: block;
+}
+Eduvid-Slidecast-Recorder[status="recording"] .actionMenu .stop {
+  display: block;
+}
+Eduvid-Slidecast-Recorder[status="paused"] .actionMenu .unpause {
+  display: block;
+}
+
+Eduvid-Slidecast-Recorder .actionMenu .start{
+  background: url("./../images/record-start.png") repeat scroll 0 0 rgba(0, 0, 0, 0);
+}
+
+Eduvid-Slidecast-Recorder .actionMenu .pause{
+  background: url("./../images/record-pause.png") repeat scroll 0 0 rgba(0, 0, 0, 0);
+}
+
+Eduvid-Slidecast-Recorder .actionMenu .unpause{
+  background: url("./../images/record-unpause.png") repeat scroll 0 0 rgba(0, 0, 0, 0);
+
+}
+Eduvid-Slidecast-Recorder .actionMenu .stop{
+  background: url("./../images/record-stop.png") repeat scroll 0 0 rgba(0, 0, 0, 0);
+}
