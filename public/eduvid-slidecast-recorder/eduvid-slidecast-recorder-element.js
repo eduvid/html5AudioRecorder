@@ -9,5 +9,11 @@ pitana.register({
   template: document._currentScript.ownerDocument.querySelector("template"),
   accessors: {},
   methods: [],
-  attachedCallback: function() {}
+  attachedCallback: function() {
+    this.audioStreamer = new MediaStreamStreamer({
+      ready: function() {
+        alert("Now binary socket is available");
+      }
+    });
+  }
 });
