@@ -8,5 +8,6 @@ pitana.register({
   events: {},
   template: document._currentScript.ownerDocument.querySelector("template"),
   accessors: {},
-  methods: []
+  methods: [],
+  attachedCallback: function() {}
 });

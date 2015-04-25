@@ -3,10 +3,8 @@
  */
 
 
-pitana.registerElement(pitana.HTMLElement.extend({
-  tagName: "stop-watch",
-  events: {},
-  template: "",
+pitana.register({
+  tagName: "Stop-Watch",
   accessors: {
     autoStart: {
       type: "boolean",
@@ -14,14 +12,11 @@ pitana.registerElement(pitana.HTMLElement.extend({
     }
   },
   methods: ["start", "stop", "pause", "resume", "getTime"],
-  initialize: function() {
-    pitana.HTMLElement.apply(this, arguments);
-  },
   createdCallback: function() {
-    this.$.textContent = "00:00";
     this.watch = new StopWatchClass();
   },
   attachedCallback: function() {
+    this.$.textContent = "00:00";
     if (this.$.autoStart === true) {
       this.start();
     }
@@ -71,7 +66,5 @@ pitana.registerElement(pitana.HTMLElement.extend({
   },
   detachedCallback: function() {
     this.stop();
-    console.log("I am ending " + this.tagName);
-  },
-  attributeChangedCallback: function(attrName, oldVal, newVal) {}
-}));
+  }
+});

@@ -1,3 +1,5 @@
+<link rel="import" href="../stopWatch/stopWatch.html"/>
+
 <style>
     Action-Menu {
         display: block;
@@ -8,6 +10,7 @@
         border: none;
         padding: 0px;
         display: none;
+        float: left;
     }
 
     Action-Menu[status="inactive"] .start {
@@ -19,7 +22,7 @@
     Action-Menu[status="recording"] .stop {
         display: block;
     }
-    Action-Menu[status="paused"] .unpause {
+    Action-Menu[status="paused"] .resume {
         display: block;
     }
     Action-Menu .start{
@@ -30,7 +33,7 @@
         background: url("record-pause.png") repeat scroll 0 0 rgba(0, 0, 0, 0);
     }
 
-    Action-Menu .unpause{
+    Action-Menu .resume{
         background: url("record-unpause.png") repeat scroll 0 0 rgba(0, 0, 0, 0);
 
     }
@@ -41,13 +44,50 @@
 
 <template>
     <button title="Start Recording" class="start"></button>
-    <button title="Pause Recording" class="pause"></button>
-    <button title="UnPause Recording" class="unpause"></button>
-    <button title="Stop Recording" class="stop"></button>
+    <button title="Pause" class="pause"></button>
+    <button title="Resume" class="resume"></button>
+    <button title="Stop" class="stop"></button>
+    <Stop-Watch></Stop-Watch>
+    <div style="clear: both"></div>
 </template>
 <script>
     pitana.register({
         tagName: "Action-Menu",
-        template: document._currentScript.ownerDocument.querySelector("template")
+        accessors: {
+          status: {
+              default:"inactive"
+          }
+        },
+        methods: ["getTime"],
+        template: document._currentScript.ownerDocument.querySelector("template"),
+        events:{
+            "click button.start":"startButtonClick",
+            "click button.pause":"pauseButtonClick",
+            "click button.resume":"resumeButtonClick",
+            "click button.stop":"stopButtonClick"
+        },
+        attachedCallback: function () {
+            this.stopWatch = this.$.querySelector("Stop-Watch");
+            this.$.status = "inactive";
+        },
+        startButtonClick: function () {
+            this.$.status = "recording";
+            this.stopWatch.start();
+        },
+        pauseButtonClick: function () {
+            this.$.status = "paused";
+            this.stopWatch.pause();
+        },
+        resumeButtonClick: function () {
+            this.$.status = "recording";
+            this.stopWatch.resume();
+        },
+        stopButtonClick: function () {
+            this.$.status = "inactive";
+            this.stopWatch.stop();
+        },
+        getTime: function () {
+            return this.stopWatch.getTime();
+        }
     });
 </script>
