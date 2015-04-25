@@ -1,0 +1,53 @@
+<style>
+    Action-Menu {
+        display: block;
+    }
+    Action-Menu button{
+        height: 48px;
+        width: 48px;
+        border: none;
+        padding: 0px;
+        display: none;
+    }
+
+    Action-Menu[status="inactive"] .start {
+        display: block;
+    }
+    Action-Menu[status="recording"] .pause {
+        display: block;
+    }
+    Action-Menu[status="recording"] .stop {
+        display: block;
+    }
+    Action-Menu[status="paused"] .unpause {
+        display: block;
+    }
+    Action-Menu .start{
+        background: url("record-start.png") repeat scroll 0 0 rgba(0, 0, 0, 0);
+    }
+
+    Action-Menu .pause{
+        background: url("record-pause.png") repeat scroll 0 0 rgba(0, 0, 0, 0);
+    }
+
+    Action-Menu .unpause{
+        background: url("record-unpause.png") repeat scroll 0 0 rgba(0, 0, 0, 0);
+
+    }
+    Action-Menu .stop{
+        background: url("record-stop.png") repeat scroll 0 0 rgba(0, 0, 0, 0);
+    }
+</style>
+
+<template>
+    <button title="Start Recording" class="start"></button>
+    <button title="Pause Recording" class="pause"></button>
+    <button title="UnPause Recording" class="unpause"></button>
+    <button title="Stop Recording" class="stop"></button>
+</template>
+<script>
+    pitana.register({
+        tagName: "Action-Menu",
+        template: document._currentScript.ownerDocument.querySelector("template")
+    });
+</script>
