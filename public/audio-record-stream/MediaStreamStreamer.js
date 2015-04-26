@@ -33,13 +33,15 @@ var MediaStreamStreamer = pitana.klass({
     this.audioRecorderElement = document.createElement("audio-recorder");
     var self = this;
     this.client.on("open", function() {
-      if (typeof self.config.ready === "function") {
-        console.log("ready to upload");
-        self.config.ready();
-      }
+      self.askPermission(function() {
+        if (typeof self.config.ready === "function") {
+          console.log("ready to upload");
+          self.config.ready();
+        }
+      });
     });
   },
-  start: function() {
+  askPermission: function(cb) {
     var self = this;
     if (this.__permissionGiven__ === false) {
       if (navigator.getUserMedia !== undefined) {
@@ -53,7 +55,7 @@ var MediaStreamStreamer = pitana.klass({
             window.alert("MediaRecorder API not present on your Browser, Please use Firefox 25+");
             return;
           }
-          self.mediaRecorder = new MediaRecorder(stream);
+          self.mediaRecorder = new MediaRecorder(self.stream);
           self.mediaRecorder.ondataavailable = function(e) {
             // ============= Fire some Event or Callback to get the Data ====
             if (typeof self.ondataavailable === "function") {
@@ -61,7 +63,7 @@ var MediaStreamStreamer = pitana.klass({
             }
             self.uploadBlobToServer(e.data);
           };
-          self.start();
+          cb(stream);
         }, function(err) {
           window.alert("Error " + err);
           console.log("The following error occured: " + err);
@@ -70,11 +72,16 @@ var MediaStreamStreamer = pitana.klass({
         window.alert("navigator.getUserMedia is undefined");
       }
     } else {
-      console.log("recoding Started");
-      this.__status__ = "recording";
-      this.mediaRecorder.start(this.config.interval);
-      this.upstream = this.client.createStream();
+      cb();
     }
+  },
+  start: function() {
+    var self = this;
+    this.askPermission(function() {
+      self.__status__ = "recording";
+      self.mediaRecorder.start(self.config.interval);
+      self.upstream = self.client.createStream();
+    });
   },
   uploadBlobToServer: function(blob) {
     console.log("uploading Data to server");
@@ -91,6 +98,7 @@ var MediaStreamStreamer = pitana.klass({
   },
   stop: function() {
     var self = this;
+    console.log("MediaStream Stopped");
     this.__status__ = "processing";
     this.mediaRecorder.stop();
     //this.upstream.end();

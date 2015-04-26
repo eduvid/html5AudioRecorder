@@ -5,15 +5,16 @@
 
 pitana.register({
   tagName: "Eduvid-Slidecast-Recorder",
-  events: {},
+  events: {
+    "actionEvent Action-Menu": "onAction"
+  },
   template: document._currentScript.ownerDocument.querySelector("template"),
   accessors: {},
   methods: [],
   attachedCallback: function() {
-    this.audioStreamer = new MediaStreamStreamer({
-      ready: function() {
-        alert("Now binary socket is available");
-      }
-    });
+
+  },
+  onAction: function(e) {
+
   }
 });

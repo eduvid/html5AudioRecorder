@@ -1,3 +1,5 @@
+<script src="../../audio-record-stream/MediaStreamStreamer.js"></script>
+
 <link rel="import" href="../stopWatch/stopWatch.html"/>
 
 <style>
@@ -68,23 +70,37 @@
         },
         attachedCallback: function () {
             this.stopWatch = this.$.querySelector("Stop-Watch");
+            this.audioStreamer = new MediaStreamStreamer({
+                ready: function() {
+                    alert("Now binary socket is available");
+                    //TODO - Disabled, buttons so that user cannot start anything before permission.
+                }
+            });
             this.$.status = "inactive";
         },
         startButtonClick: function () {
+            this.trigger("actionEvent", {action:"start"});
             this.$.status = "recording";
             this.stopWatch.start();
+            this.audioStreamer.start();
         },
         pauseButtonClick: function () {
+            this.trigger("actionEvent", {action:"pause"});
             this.$.status = "paused";
             this.stopWatch.pause();
+            this.audioStreamer.pause();
         },
         resumeButtonClick: function () {
+            this.trigger("actionEvent", {action:"resume"});
             this.$.status = "recording";
             this.stopWatch.resume();
+            this.audioStreamer.resume();
         },
         stopButtonClick: function () {
+            this.trigger("actionEvent", {action:"stop"});
             this.$.status = "inactive";
             this.stopWatch.stop();
+            this.audioStreamer.stop();
         },
         getTime: function () {
             return this.stopWatch.getTime();
