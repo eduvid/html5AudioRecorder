@@ -34,7 +34,7 @@ pitana.register({
     var self = this;
     this.id = window.setInterval(function() {
       self.$.textContent = self.convertToTime(self.watch.getTime());
-    }, 1000);
+    }, 500);
   },
   start: function() {
     this.watch.start();

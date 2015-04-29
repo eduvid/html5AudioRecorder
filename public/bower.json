@@ -14,7 +14,7 @@
     "tests"
   ],
   "dependencies": {
-    "pitana.js": "~1.0.3",
+    "pitana.js": "~1.0.6",
     "binaryjs": "~0.2.1",
     "pdfjs-dist": "~1.1.38",
     "pt-pdfslideshow": "~1.0.3"

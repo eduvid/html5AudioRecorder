@@ -2,7 +2,7 @@
  * Created by narendra on 26/4/15.
  */
 
-var eduvidSlidecastRecorder = pitana.klass({
+var EduvidSlidecastRecorder = pitana.klass({
   initialize: function() {
     this.pdfMediaIndex = 1;
     this.data = {
@@ -27,7 +27,7 @@ var eduvidSlidecastRecorder = pitana.klass({
     };
   },
   save: function() {
-
+    console.log(this.data);
   },
   getData: function() {
     return this.data;
@@ -38,6 +38,9 @@ var eduvidSlidecastRecorder = pitana.klass({
   updateSlideName: function(pdfName) {
     this.data.media[1].src = pdfName;
   },
+  updateLength: function(timeMs) {
+    this.data.type.length = this.humanReadableTime(timeMs);
+  },
   updateAudioFileName: function(audioFileName) {
     this.data.media[0].src = audioFileName;
   },
@@ -45,9 +48,9 @@ var eduvidSlidecastRecorder = pitana.klass({
     var s = parseInt(ms / 1000);
     var m = parseInt(s / 60);
     var h = parseInt(m / 60);
-    return h + ":" + m % 60 + ":" + s % 60 + ":" + ms % 1000;
+    return h + ":" + m % 60 + ":" + s % 60 + ":" + parseInt(ms % 1000);
   },
-  slideChange: function(slideNum, timeMs) {
+  addSlideChange: function(slideNum, timeMs) {
     this.data.events.push({
       time: this.humanReadableTime(timeMs),
       show: this.pdfMediaIndex + "#" + slideNum
