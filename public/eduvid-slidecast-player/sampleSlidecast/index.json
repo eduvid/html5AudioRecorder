@@ -1,0 +1,36 @@
+{
+  "format": {
+    "type": "eduvid",
+    "version": "1.0.1"
+  },
+  "type": {
+    "seekBarType": "audio",
+    "seekBarMediaIndex": 0,
+    "length": "0:0:3:529"
+  },
+  "media": [
+    {
+      "type": "audio",
+      "src": "recording-1430116751473.ogg"
+    },
+    {
+      "type": "pdf",
+      "src": "JavaScript-prototype and Module Pattern.pdf"
+    }
+  ],
+  "layout": {},
+  "events": [
+    {
+      "time": "0:0:0:0",
+      "show": "1#1"
+    },
+    {
+      "time": "0:0:1:327",
+      "show": "1#2"
+    },
+    {
+      "time": "0:0:2:119",
+      "show": "1#3"
+    }
+  ]
+}
